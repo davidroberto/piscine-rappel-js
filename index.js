@@ -1,48 +1,44 @@
 const button = document.querySelector("button");
 
-button.addEventListener("click", () => {
+// au click sur le bouton
+button.addEventListener("click", async () => {
   const divRoot = document.querySelector("#root");
 
-  const articleElement = createNodeElement("article", {
-    class: "article-piscine",
+  // je fais un appel fetch (asynchrone) vers l'url de l'api
+  const responseJson = await fetch("https://www.themealdb.com/api/json/v1/1/search.php?s");
+  // quand j'ai le résultat, je converti le json récupéré en Javascript
+  const responseJavascript = await responseJson.json();
+
+  //  j'utilise foreach pour faire une boucle sur le résultat
+  // et pour chaque élément (recette), j'affiche le titre et l'image
+  responseJavascript.meals.forEach((meal) => {
+    // j'utilise ma fonction createNodeElement pour créer un h2
+    // avec en valeur le titre de la recette de l'api
+    const mealTitleElement = createNodeElement(
+      "h2",
+      {
+        class: "meal-title",
+      },
+      meal.strMeal
+    );
+
+    // j'insère le titre dans ma div root
+    divRoot.appendChild(mealTitleElement);
+
+    // j'utilise ma fonction createNodeElement pour créer une image
+    // avec en valeur l'image de la recette de l'api
+    const mealImgElement = createNodeElement("img", {
+      src: meal.strMealThumb,
+    });
+
+    // j'insère l'image dans ma div root
+    divRoot.appendChild(mealImgElement);
   });
-  divRoot.appendChild(articleElement);
-
-  const titleElement = createNodeElement(
-    "h1",
-    {
-      class: "title-piscine",
-    },
-    "Hello La Piscine"
-  );
-  articleElement.appendChild(titleElement);
-
-  const imgElement = createNodeElement(
-    "img",
-    {
-      class: "img-piscine",
-      src: "https://www.activateurdeprogres.fr/sites/default/files/activator_form/Piscine-x-EGS.jpg",
-    },
-    ""
-  );
-  articleElement.appendChild(imgElement);
-
-  const textElement = createNodeElement(
-    "p",
-    {
-      class: "text-piscine",
-    },
-    "lorem ipsum"
-  );
-  articleElement.appendChild(textElement);
 });
 
 const createNodeElement = (tagType, attributes, text = "") => {
   const nodeElement = document.createElement(tagType);
 
-  // on fait une boucle sur l'objet attributes
-  // et pour chaque propriété trouvée (class, src etc)
-  // on ajoute un attribut avec en type le nom de la propriété et en valeur sa valeur
   for (const property in attributes) {
     nodeElement.setAttribute(property, attributes[property]);
   }
@@ -51,3 +47,10 @@ const createNodeElement = (tagType, attributes, text = "") => {
 
   return nodeElement;
 };
+
+// data.meals.forEach((element) => {
+//   const mealTitle = element.strMeal;
+//   const mealTitleElement = createNodeElement("h2", { class: "meal-title" }, mealTitle);
+//   console.log(mealTitleElement);
+//   divRoot.appendChild(mealTitleElement);
+// });
