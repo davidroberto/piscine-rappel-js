@@ -8,11 +8,13 @@ button.addEventListener("click", () => {
 
   // je créé une balise article
   const articleElement = document.createElement("article");
+  articleElement.setAttribute("class", "article-piscine");
   divRoot.appendChild(articleElement);
 
   // créer un titre
   const titleElement = document.createElement("h1");
   titleElement.textContent = "Hello La Piscine";
+  titleElement.setAttribute("class", "title-piscine");
   articleElement.appendChild(titleElement);
 
   const imgElement = document.createElement("img");
@@ -20,9 +22,11 @@ button.addEventListener("click", () => {
     "src",
     "https://www.activateurdeprogres.fr/sites/default/files/activator_form/Piscine-x-EGS.jpg"
   );
+  imgElement.setAttribute("class", "img-piscine");
   articleElement.appendChild(imgElement);
 
   const textElement = document.createElement("p");
+  textElement.setAttribute("class", "text-piscine");
   textElement.textContent = "lorem ipsum";
   articleElement.appendChild(textElement);
 });
