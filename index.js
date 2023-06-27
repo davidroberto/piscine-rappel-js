@@ -1,41 +1,12 @@
-const button = document.querySelector("button");
+// ----------------
+// Fonctions / variables globales (utilisées dans tous les composants)
+// ----------------
 
-// au click sur le bouton
-button.addEventListener("click", async () => {
-  const divRoot = document.querySelector("#root");
+// permet de cibler la div avec l'id root créée en HTML
+const divRoot = document.querySelector("#root");
 
-  // je fais un appel fetch (asynchrone) vers l'url de l'api
-  const responseJson = await fetch("https://www.themealdb.com/api/json/v1/1/search.php?s");
-  // quand j'ai le résultat, je converti le json récupéré en Javascript
-  const responseJavascript = await responseJson.json();
-
-  //  j'utilise foreach pour faire une boucle sur le résultat
-  // et pour chaque élément (recette), j'affiche le titre et l'image
-  responseJavascript.meals.forEach((meal) => {
-    // j'utilise ma fonction createNodeElement pour créer un h2
-    // avec en valeur le titre de la recette de l'api
-    const mealTitleElement = createNodeElement(
-      "h2",
-      {
-        class: "meal-title",
-      },
-      meal.strMeal
-    );
-
-    // j'insère le titre dans ma div root
-    divRoot.appendChild(mealTitleElement);
-
-    // j'utilise ma fonction createNodeElement pour créer une image
-    // avec en valeur l'image de la recette de l'api
-    const mealImgElement = createNodeElement("img", {
-      src: meal.strMealThumb,
-    });
-
-    // j'insère l'image dans ma div root
-    divRoot.appendChild(mealImgElement);
-  });
-});
-
+// fonction générique permettant de créer un tag HTML (un node du DOM)
+// en précisant son type (div, p, h2 etc), ses attributs et son texte
 const createNodeElement = (tagType, attributes, text = "") => {
   const nodeElement = document.createElement(tagType);
 
@@ -48,9 +19,60 @@ const createNodeElement = (tagType, attributes, text = "") => {
   return nodeElement;
 };
 
-// data.meals.forEach((element) => {
-//   const mealTitle = element.strMeal;
-//   const mealTitleElement = createNodeElement("h2", { class: "meal-title" }, mealTitle);
-//   console.log(mealTitleElement);
-//   divRoot.appendChild(mealTitleElement);
-// });
+// ----------------
+// Composants permettant de créer le contenu de notre site
+// ----------------
+
+// fonction qui permet de créer le formulaire de contact
+// et de gérer sa logique (envoie des données au submit si besoin etc)
+const contactFormComponent = () => {
+  const formElement = createNodeElement("form");
+
+  const inputTextElement = createNodeElement("input", {
+    type: "text",
+    class: "contact-text",
+  });
+  formElement.appendChild(inputTextElement);
+
+  const submitBtnElement = createNodeElement(
+    "button",
+    {
+      type: "submit",
+      class: "contact-submit",
+    },
+    "Valider"
+  );
+  formElement.appendChild(submitBtnElement);
+
+  divRoot.appendChild(formElement);
+};
+
+// appel de la fonction permettant de créer le formulaire de contact
+contactFormComponent();
+
+// création de la fonction pour afficher la liste de recettes
+// fait un appel vers l'api pour récupérer les données
+// créer le HTML pour afficher les données (recettes de cuisines)
+const mealsListComponent = async () => {
+  const responseJson = await fetch("https://www.themealdb.com/api/json/v1/1/search.php?s");
+  const responseJavascript = await responseJson.json();
+
+  responseJavascript.meals.forEach((meal) => {
+    const mealTitleElement = createNodeElement(
+      "h2",
+      {
+        class: "meal-title",
+      },
+      meal.strMeal
+    );
+    divRoot.appendChild(mealTitleElement);
+
+    const mealImgElement = createNodeElement("img", {
+      src: meal.strMealThumb,
+    });
+    divRoot.appendChild(mealImgElement);
+  });
+};
+
+// appel de la fonction qui permet de créer la liste des recettes de cuisine
+mealsListComponent();
